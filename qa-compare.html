@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Reference vs implementation</title>
+    <style>
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        padding: 32px;
+        background: #0a0a0a;
+        color: #f5f5f7;
+        font-family:
+          -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI",
+          sans-serif;
+      }
+
+      h1 {
+        margin: 0 0 4px;
+        font-size: 22px;
+        font-weight: 600;
+        letter-spacing: -0.03em;
+      }
+
+      p {
+        margin: 0 0 24px;
+        color: #86868b;
+        font-size: 13px;
+      }
+
+      .grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 24px;
+      }
+
+      figure {
+        margin: 0;
+      }
+
+      .frame {
+        display: grid;
+        height: 560px;
+        place-items: center;
+        overflow: hidden;
+        border: 1px solid rgba(245, 245, 247, 0.12);
+        background: #111111;
+      }
+
+      .frame img {
+        display: block;
+        max-height: 100%;
+        max-width: 100%;
+      }
+
+      figcaption {
+        margin-top: 12px;
+        font-size: 12px;
+        font-weight: 600;
+        letter-spacing: 0.16em;
+        text-transform: uppercase;
+      }
+
+      figcaption span {
+        display: block;
+        margin-top: 6px;
+        color: #86868b;
+        font-size: 12px;
+        font-weight: 400;
+        letter-spacing: 0;
+        text-transform: none;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Hero source vs implemented first screen</h1>
+    <p>
+      Source: 21st.dev hero-section-5 reference. Implementation: AI Specialist
+      entry screen (dark / red palette per brief).
+    </p>
+    <div class="grid">
+      <figure>
+        <div class="frame">
+          <img src="/reference-hero-section-5.png" alt="Reference hero" />
+        </div>
+        <figcaption>
+          Source visual
+          <span>reference-hero-section-5.png &middot; 780 x 526</span>
+        </figcaption>
+      </figure>
+      <figure>
+        <div class="frame">
+          <img src="/final-entry-desktop.png" alt="Implemented entry screen" />
+        </div>
+        <figcaption>
+          Implemented first screen
+          <span>final-entry-desktop.png &middot; 1440 x 900</span>
+        </figcaption>
+      </figure>
+    </div>
+  </body>
+</html>

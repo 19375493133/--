@@ -1,0 +1,16 @@
+# 依赖（用 npm install 重新装，不要进版本库）
+node_modules/
+
+# npm 缓存（本项目把缓存目录放在仓库里了，约 400MB）
+.npm-cache/
+
+# 构建产物（npm run build 会重新生成）
+dist/
+
+# 日志
+*.log
+
+# QA / 设计截图：由 scripts/qa-*.mjs 和 scripts/capture-check.mjs 生成，
+# 重跑脚本就会再生成，不需要进版本库（约 25MB）。
+# 这些只匹配仓库根目录，src/assets 和 public 下的正式图片不受影响。
+/*.png

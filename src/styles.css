@@ -1,0 +1,143 @@
+@import "tailwindcss";
+
+@theme {
+  --color-ink: #0a0a0a;
+  --color-panel: #111111;
+  --color-accent: #e10600;
+  --color-accent-bright: #ff2d2d;
+  --color-primary: #f5f5f7;
+  --color-secondary: #86868b;
+  --font-sans:
+    -apple-system, BlinkMacSystemFont, "SF Pro Display", "Inter", "PingFang SC",
+    "Hiragino Sans GB", "Noto Sans CJK SC", "Microsoft YaHei", "Segoe UI",
+    sans-serif;
+  --ease-apple: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+:root {
+  color-scheme: dark;
+  font-family: var(--font-sans);
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background: #0a0a0a;
+  color: #f5f5f7;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  min-width: 320px;
+  background: #0a0a0a;
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+  min-height: 100vh;
+  overflow-x: hidden;
+  background: #0a0a0a;
+}
+
+body,
+button,
+input,
+textarea {
+  font-family: var(--font-sans);
+}
+
+button,
+a {
+  -webkit-tap-highlight-color: transparent;
+}
+
+a {
+  text-decoration: none;
+}
+
+button {
+  cursor: pointer;
+}
+
+h1,
+h2 {
+  letter-spacing: -0.03em;
+}
+
+h3 {
+  letter-spacing: -0.02em;
+}
+
+img,
+video {
+  display: block;
+  max-width: 100%;
+}
+
+::selection {
+  background: #e10600;
+  color: #f5f5f7;
+}
+
+/* Red focus ring. The base colour is set here so utility classes that
+   transition `outline-color` never fade the ring in from the text colour. */
+:where(a, button, input, textarea, [tabindex]) {
+  outline-color: #ff2d2d;
+}
+
+:where(a, button, input, textarea, [tabindex]):focus-visible {
+  outline: 2px solid #ff2d2d;
+  outline-offset: 4px;
+}
+
+.grid-field {
+  background-image:
+    linear-gradient(rgba(245, 245, 247, 0.08) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(245, 245, 247, 0.08) 1px, transparent 1px);
+  background-size: 72px 72px;
+  mask-image: radial-gradient(
+    ellipse at center,
+    black 12%,
+    rgba(0, 0, 0, 0.76) 48%,
+    transparent 82%
+  );
+  -webkit-mask-image: radial-gradient(
+    ellipse at center,
+    black 12%,
+    rgba(0, 0, 0, 0.76) 48%,
+    transparent 82%
+  );
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: #0a0a0a;
+}
+
+::-webkit-scrollbar-thumb {
+  border: 3px solid #0a0a0a;
+  background: #38383d;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #e10600;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+  }
+}

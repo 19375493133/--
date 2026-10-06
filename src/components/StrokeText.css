@@ -1,0 +1,28 @@
+.stroke-text {
+  display: block;
+  width: 100%;
+  line-height: 0;
+}
+
+.stroke-text--hover {
+  cursor: pointer;
+}
+
+.stroke-text__svg {
+  display: block;
+  width: 100%;
+  height: var(--stroke-text-height, 160px);
+}
+
+.stroke-text__stroke,
+.stroke-text__fill {
+  user-select: none;
+}
+
+.brush-stroke-text,
+.brush-stroke-text .stroke-text__stroke,
+.brush-stroke-text .stroke-text__fill {
+  font-family:
+    "Ma Shan Zheng", "STXingkai", "华文行楷", "FZKai-Z03", "KaiTi",
+    "STKaiti", serif;
+}

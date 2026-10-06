@@ -1,0 +1,58 @@
+.card-swap-container {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  transform: translate(5%, 20%);
+  transform-origin: bottom right;
+  perspective: 900px;
+  overflow: visible;
+}
+
+.card {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  border: 1px solid #fff;
+  border-radius: 12px;
+  background: #000;
+  transform-style: preserve-3d;
+  will-change: transform;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+
+.card.hero-swap-card {
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 8px;
+  background:
+    linear-gradient(
+      145deg,
+      rgba(255, 255, 255, 0.075),
+      rgba(255, 255, 255, 0.018) 45%,
+      rgba(225, 6, 0, 0.06)
+    ),
+    rgba(13, 13, 13, 0.9);
+  box-shadow:
+    0 28px 70px rgba(0, 0, 0, 0.58),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  color: #f5f5f7;
+  backdrop-filter: blur(22px);
+}
+
+.card.hero-swap-card::before {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(90deg, transparent, rgba(225, 6, 0, 0.16), transparent)
+      top / 100% 1px no-repeat,
+    radial-gradient(circle at 86% 12%, rgba(225, 6, 0, 0.18), transparent 40%);
+  content: "";
+  pointer-events: none;
+}
+
+@media (max-width: 1023px) {
+  .card-swap-container {
+    transform: scale(0.72) translate(25%, 25%);
+  }
+}
