@@ -210,7 +210,11 @@ function GlassPortrait() {
 
   useEffect(() => {
     const element = tiltRef.current;
-    if (!element || reduceMotion) {
+    if (
+      !element ||
+      reduceMotion ||
+      !window.matchMedia("(hover: hover) and (pointer: fine)").matches
+    ) {
       return undefined;
     }
 
@@ -227,6 +231,84 @@ function GlassPortrait() {
     return () => tilt.destroy();
   }, [reduceMotion]);
 
+  useEffect(() => {
+    const element = tiltRef.current;
+    if (
+      !element ||
+      reduceMotion ||
+      !window.matchMedia("(pointer: coarse)").matches
+    ) {
+      return undefined;
+    }
+
+    let activePointer: number | null = null;
+    let frame: number | null = null;
+    let nextX = 0;
+    let nextY = 0;
+    let bounds = element.getBoundingClientRect();
+
+    const paint = () => {
+      frame = null;
+      const rotateY = nextX * 8;
+      const rotateX = nextY * -8;
+      element.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.005, 1.005, 1.005)`;
+    };
+
+    const update = (clientX: number, clientY: number) => {
+      nextX = Math.min(
+        0.5,
+        Math.max(-0.5, (clientX - bounds.left) / bounds.width - 0.5),
+      );
+      nextY = Math.min(
+        0.5,
+        Math.max(-0.5, (clientY - bounds.top) / bounds.height - 0.5),
+      );
+      if (frame === null) {
+        frame = window.requestAnimationFrame(paint);
+      }
+    };
+
+    const reset = () => {
+      activePointer = null;
+      element.style.transform =
+        "perspective(1000px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)";
+    };
+
+    const handlePointerDown = (event: PointerEvent) => {
+      if (event.pointerType === "mouse") return;
+      activePointer = event.pointerId;
+      bounds = element.getBoundingClientRect();
+      try {
+        element.setPointerCapture(event.pointerId);
+      } catch {
+        // Ignore unsupported pointer capture implementations.
+      }
+      update(event.clientX, event.clientY);
+    };
+
+    const handlePointerMove = (event: PointerEvent) => {
+      if (event.pointerId !== activePointer) return;
+      update(event.clientX, event.clientY);
+    };
+
+    const handlePointerEnd = (event: PointerEvent) => {
+      if (event.pointerId !== activePointer) return;
+      reset();
+    };
+
+    element.addEventListener("pointerdown", handlePointerDown);
+    element.addEventListener("pointermove", handlePointerMove);
+    element.addEventListener("pointerup", handlePointerEnd);
+    element.addEventListener("pointercancel", handlePointerEnd);
+    return () => {
+      if (frame !== null) window.cancelAnimationFrame(frame);
+      element.removeEventListener("pointerdown", handlePointerDown);
+      element.removeEventListener("pointermove", handlePointerMove);
+      element.removeEventListener("pointerup", handlePointerEnd);
+      element.removeEventListener("pointercancel", handlePointerEnd);
+    };
+  }, [reduceMotion]);
+
   return (
     <motion.figure
       className="relative aspect-[390/567] w-80 max-w-full shrink-0 rounded-[8px] sm:w-[26rem] lg:w-[28rem]"
@@ -239,7 +321,7 @@ function GlassPortrait() {
       <div
         ref={tiltRef}
         data-portrait-tilt="true"
-        className="relative h-full w-full rounded-[8px] p-1 [transform-style:preserve-3d] sm:p-[5px]"
+        className="relative h-full w-full touch-pan-y rounded-[8px] p-1 transition-transform duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] [transform-style:preserve-3d] sm:p-[5px]"
       >
         <span
           aria-hidden="true"

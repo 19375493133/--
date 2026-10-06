@@ -83,6 +83,7 @@ type LanyardProps = {
   lanyardImage?: string | null;
   lanyardWidth?: number;
   lanyardRepeat?: [number, number];
+  paused?: boolean;
 };
 
 export default function Lanyard({
@@ -96,6 +97,7 @@ export default function Lanyard({
   lanyardImage = null,
   lanyardWidth = 1,
   lanyardRepeat = [-4, 1],
+  paused = false,
 }: LanyardProps) {
   const [isMobile, setIsMobile] = useState(
     () => typeof window !== "undefined" && window.innerWidth < 768,
@@ -123,6 +125,7 @@ export default function Lanyard({
       <Canvas
         camera={{ position, fov }}
         dpr={renderDpr}
+        frameloop={paused ? "never" : "always"}
         gl={{
           alpha: transparent,
           antialias: false,
@@ -371,6 +374,7 @@ function Band({
   }, [dragged, hovered]);
 
   useFrame((state, delta) => {
+    const frameDelta = Math.min(delta, 1 / 30);
     if (dragged) {
       vector
         .set(state.pointer.x, state.pointer.y, 0.5)
@@ -428,7 +432,7 @@ function Band({
       );
       lerped.lerp(
         body.translation(),
-        delta *
+        frameDelta *
           (minSpeed +
             clampedDistance * (maxSpeed - minSpeed)),
       );

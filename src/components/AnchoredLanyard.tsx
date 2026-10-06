@@ -22,7 +22,13 @@ const FIXED_POINT_Y_RATIO = 0.185;
 export function AnchoredLanyard() {
   const containerRef = useRef<HTMLDivElement>(null);
   const reduceMotion = useReducedMotion();
+  const [canRender, setCanRender] = useState(
+    () =>
+      typeof window !== "undefined" &&
+      window.matchMedia("(min-width: 1024px)").matches,
+  );
   const [isVisible, setIsVisible] = useState(false);
+  const [isScrolling, setIsScrolling] = useState(false);
   const [position, setPosition] = useState<Position>({
     left: 0,
     top: 0,
@@ -31,15 +37,30 @@ export function AnchoredLanyard() {
   });
 
   useEffect(() => {
+    const mediaQuery = window.matchMedia("(min-width: 1024px)");
+    const syncMedia = () => setCanRender(mediaQuery.matches);
+
+    syncMedia();
+    mediaQuery.addEventListener("change", syncMedia);
+    return () => mediaQuery.removeEventListener("change", syncMedia);
+  }, []);
+
+  useEffect(() => {
+    if (!canRender) {
+      setIsVisible(false);
+      return undefined;
+    }
+
     const container = containerRef.current;
     if (!container) return undefined;
 
     let frame: number | null = null;
+    let scrollEndTimer: number | null = null;
     const visibilityObserver = new IntersectionObserver(
       ([entry]) => {
         setIsVisible(entry.isIntersecting);
       },
-      { rootMargin: "240px 0px", threshold: 0.01 },
+      { rootMargin: "0px 0px -100px 0px", threshold: 0.01 },
     );
     visibilityObserver.observe(container);
 
@@ -71,27 +92,41 @@ export function AnchoredLanyard() {
       frame = window.requestAnimationFrame(syncPosition);
     };
 
+    const handleScroll = () => {
+      setIsScrolling(true);
+      requestSync();
+      if (scrollEndTimer !== null) {
+        window.clearTimeout(scrollEndTimer);
+      }
+      scrollEndTimer = window.setTimeout(() => {
+        scrollEndTimer = null;
+        setIsScrolling(false);
+      }, 160);
+    };
+
     syncPosition();
-    window.addEventListener("scroll", requestSync, { passive: true });
+    window.addEventListener("scroll", handleScroll, { passive: true });
     window.addEventListener("resize", requestSync);
 
     return () => {
       if (frame !== null) window.cancelAnimationFrame(frame);
+      if (scrollEndTimer !== null) window.clearTimeout(scrollEndTimer);
       visibilityObserver.disconnect();
-      window.removeEventListener("scroll", requestSync);
+      window.removeEventListener("scroll", handleScroll);
       window.removeEventListener("resize", requestSync);
     };
-  }, []);
+  }, [canRender]);
 
   return (
     <div
       ref={containerRef}
       className="pointer-events-none absolute inset-0 z-20 hidden overflow-visible lg:block"
     >
-      {!reduceMotion && isVisible ? (
+      {canRender && !reduceMotion && isVisible ? (
         <motion.div
           data-lanyard-anchored="true"
           data-card-visible={isVisible ? "true" : "false"}
+          data-lanyard-paused={isScrolling ? "true" : "false"}
           className="absolute"
           initial={{ x: "-50%", scale: 0.001, opacity: 0 }}
           animate={
@@ -124,6 +159,7 @@ export function AnchoredLanyard() {
               lanyardImage={fabricLanyardTexture}
               lanyardWidth={1}
               lanyardRepeat={[1, 1]}
+              paused={isScrolling}
             />
           </Suspense>
         </motion.div>
